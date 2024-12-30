@@ -1,23 +1,20 @@
-# Streamlit app principal
 import streamlit as st
+from utils import data_processing, analysis, visualization
 
-# Título de la app
+# Título de la aplicación
 st.title("Sistema de Identificación de Leptospira Interrogans")
 
+# Menú principal
+menu = st.sidebar.selectbox("Seleccione una opción", ["Carga y Preprocesamiento", "Análisis de Muestras", "Visualización de Resultados"])
 
-# Subida de archivos
-st.header("Carga de archivo")
-uploaded_file = st.file_uploader("Sube un video o imagen para análisis", type=["mp4", "png", "jpg"])
+if menu == "Carga y Preprocesamiento":
+    st.header("Carga y Preprocesamiento de Videos")
+    data_processing.process_videos()
 
-if uploaded_file:
-    # Mostrar archivo cargado
-    st.success(f"Archivo '{uploaded_file.name}' cargado exitosamente.")
-    if uploaded_file.name.endswith(".mp4"):
-        st.video(uploaded_file)
-    else:
-        st.image(uploaded_file)
+elif menu == "Análisis de Muestras":
+    st.header("Análisis de Muestras")
+    analysis.analyze_samples()
 
-
-# Punto de entrada
-if __name__ == "__main__":
-    st.write("Interfaz en construcción...")
+elif menu == "Visualización de Resultados":
+    st.header("Visualización de Resultados")
+    visualization.show_results()
