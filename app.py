@@ -4,10 +4,6 @@ import streamlit as st
 # Título de la app
 st.title("Sistema de Identificación de Leptospira Interrogans")
 
-import streamlit as st
-
-# Título principal
-st.title("Sistema de Identificación de Leptospira Interrogans")
 
 # Subida de archivos
 st.header("Carga de archivo")
