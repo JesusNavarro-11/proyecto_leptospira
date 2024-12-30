@@ -1,2 +1,1 @@
-mkdir -p proyecto-leptospira/{utils,saved_models,data,results}
-touch proyecto-leptospira/{app.py,requirements.txt,README.md}
+
