@@ -1,9 +1,15 @@
-# Streamlit app principal
 import streamlit as st
+import data_processing
+import analysis
+import visualization
 
-# Título de la app
 st.title("Sistema de Identificación de Leptospira Interrogans")
 
-# Punto de entrada
-if __name__ == "__main__":
-    st.write("Interfaz en construcción...")
+menu = st.sidebar.selectbox("Seleccione una opción", ["Carga de Videos", "Análisis", "Visualización"])
+
+if menu == "Carga de Videos":
+    data_processing.process_videos()
+elif menu == "Análisis":
+    analysis.analyze_samples()
+elif menu == "Visualización":
+    visualization.show_results()
