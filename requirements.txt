@@ -1,6 +1,0 @@
-streamlit
-tensorflow
-pandas
-matplotlib
-seaborn
-opencv-python
