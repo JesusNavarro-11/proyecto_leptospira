@@ -26,8 +26,8 @@ def select_roi(frame):
 
         # Controles deslizantes para seleccionar las coordenadas
         st.write("Usa los deslizantes para seleccionar el centro de la ROI:")
-        x = st.slider("Coordenada X (horizontal)", 0, display_width, display_width // 8)
-        y = st.slider("Coordenada Y (vertical)", 0, display_height, display_height // 1)
+        x = st.slider("Coordenada X (horizontal)", 0, display_width, display_width // 2)
+        y = st.slider("Coordenada Y (vertical)", 0, display_height, display_height // 2)
 
         # Dibujar los ejes sobre la imagen
         image_with_axes = image_resized.copy()
@@ -57,7 +57,7 @@ def select_roi(frame):
             roi = frame[int(y1 * y_ratio):int(y2 * y_ratio), int(x1 * x_ratio):int(x2 * x_ratio)]
 
             # Mostrar la ROI seleccionada
-            st.image(roi, caption="ROI Seleccionada (300x300)")
+            st.image(roi, caption="ROI Seleccionada (300x300)", use_column_width=True)
             return (int(x1 * x_ratio), int(y1 * y_ratio), int(x2 * x_ratio), int(y2 * y_ratio))
 
         st.info("Ajusta los deslizantes y haz clic en 'Confirmar Selección' para continuar.")
