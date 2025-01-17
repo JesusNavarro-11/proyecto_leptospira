@@ -2,6 +2,8 @@ import streamlit as st
 from design import display_header_with_logo, display_centered_image
 from roi_selection import select_roi
 from data_processing import convert_to_mp4, extract_first_frame, preprocess_roi
+from video_processing import process_frames_with_clahe
+from patient_info import collect_patient_info
 from PIL import Image
 import os
 
