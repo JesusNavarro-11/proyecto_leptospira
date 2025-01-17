@@ -1,32 +1,38 @@
-import streamlit as st
 from PIL import Image
+from io import BytesIO
+import base64
 from streamlit_drawable_canvas import st_canvas
 import cv2
+import streamlit as st
 
-def select_roi(frame):
+def image_to_base64(image):
     """
-    Muestra un lienzo interactivo para seleccionar el punto central de la ROI.
-    
+    Convierte una imagen PIL a una cadena base64.
+
     Args:
-        frame (numpy array): Fotograma del video.
+        image (PIL.Image): Imagen a convertir.
 
     Returns:
-        tuple: Coordenadas de la ROI (x1, y1, x2, y2) o None si no se seleccionó un punto.
+        str: Representación base64 de la imagen.
     """
+    buffered = BytesIO()
+    image.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode()
+    return f"data:image/png;base64,{img_str}"
+
+def select_roi(frame):
     try:
-        # Convertir el fotograma a formato PIL
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image = Image.fromarray(frame_rgb)
-
-        # Redimensionar la imagen para evitar problemas de tamaño
         image.thumbnail((800, 800), Image.Resampling.LANCZOS)
 
-        # Mostrar lienzo interactivo
-        st.write("Selecciona el punto central de la ROI haciendo clic en el fotograma:")
+        # Convertir imagen a base64
+        image_base64 = image_to_base64(image)
+
         canvas_result = st_canvas(
-            fill_color="rgba(255, 0, 0, 0.3)",  # Color del punto seleccionado
+            fill_color="rgba(255, 0, 0, 0.3)",
             stroke_width=1,
-            background_image=image,
+            background_image_url=image_base64,  # Usar base64 aquí
             update_streamlit=True,
             height=image.height,
             width=image.width,
@@ -34,29 +40,18 @@ def select_roi(frame):
             key="canvas",
         )
 
-        # Procesar selección del usuario
+        # Procesar la selección del usuario
         if canvas_result.json_data is not None:
             for obj in canvas_result.json_data["objects"]:
                 x = int(obj["left"])
                 y = int(obj["top"])
                 st.write(f"Punto seleccionado: ({x}, {y})")
-
-                # Calcular ROI alrededor del punto seleccionado
-                half_size = 150  # Mitad de 300x300
+                half_size = 150
                 x1, y1 = max(0, x - half_size), max(0, y - half_size)
                 x2, y2 = min(frame.shape[1], x + half_size), min(frame.shape[0], y + half_size)
-
-                # Mostrar vista previa de la ROI
                 roi = frame[y1:y2, x1:x2]
-                st.write("Vista previa de la región seleccionada:")
                 st.image(roi, caption="ROI Seleccionada")
-
-                # Confirmar selección
-                if st.button("Confirmar selección"):
-                    return (x1, y1, x2, y2)
-                else:
-                    st.warning("Haz clic nuevamente en la zona de interés si deseas cambiar la selección.")
-                    return None
+                return (x1, y1, x2, y2)
     except Exception as e:
         st.error(f"Error al seleccionar la ROI: {e}")
         return None
