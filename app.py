@@ -89,12 +89,19 @@ if uploaded_file:
                             # Mostrar resultados de la simulación
                     st.header("Resultados de la Simulación")
             
-                    # Simulación de Grad-CAM
-                    frame = np.zeros((300, 300, 3), dtype=np.uint8)  # Simular un frame vacío
-                    grad_cam_overlay = np.zeros((300, 300, 3), dtype=np.uint8)  # Simular un overlay
-            
-                    # Visualizar Grad-CAM
-                    rv.display_grad_cam_result(frame, grad_cam_overlay)
+                   # Mostrar resultados de la simulación
+                    st.header("Resultados de la Simulación")
+                    
+                    # Cargar imagen simulada como Grad-CAM
+                    grad_cam_path = os.path.join("assets", "grad-cam simulacion.png")
+                    try:
+                        grad_cam_image = Image.open(grad_cam_path)
+
+                        # Mostrar la imagen con Grad-CAM
+                        st.image(grad_cam_image, caption="Fotograma con Grad-CAM aplicado", use_container_width=True)
+                    except FileNotFoundError:
+                        st.error("No se encontró la imagen de Grad-CAM simulada.")
+
             
                     # Mostrar métricas y datos morfológicos
                     rv.display_metrics()
