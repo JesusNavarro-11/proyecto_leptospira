@@ -52,3 +52,18 @@ def display_morphological_info():
     st.write("- **Tamaño Promedio:** 15 µm")
     st.write("- **Forma:** Espiral")
     st.write("- **Patrón de Movimiento:** Helicoidal")
+
+def store_results_in_session(metrics, morphological_info, grad_cam_path):
+    """
+    Guarda los resultados (métricas, información morfológica, y Grad-CAM) en st.session_state.
+
+    Args:
+        metrics (dict): Diccionario con métricas del modelo.
+        morphological_info (dict): Diccionario con información morfológica.
+        grad_cam_path (str): Ruta al archivo de la imagen Grad-CAM.
+    """
+    import streamlit as st
+
+    st.session_state["metrics"] = metrics
+    st.session_state["morphological_info"] = morphological_info
+    st.session_state["grad_cam_path"] = grad_cam_path
