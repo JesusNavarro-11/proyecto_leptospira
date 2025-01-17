@@ -41,3 +41,26 @@ def convert_to_mp4(video_file, original_format="mp4"):
         return temp_mp4_path
     except Exception as e:
         raise ValueError(f"Error al convertir el video a MP4: {e}")
+
+def extract_first_frame(video_file_path):
+    """
+    Extrae el primer fotograma de un archivo de video cargado.
+
+    Args:
+        video_file_path: Ruta al archivo de video (MP4).
+
+    Returns:
+        numpy array: Primer fotograma del video.
+    """
+    try:
+        # Leer el video desde la ruta proporcionada
+        cap = cv2.VideoCapture(video_file_path)
+        ret, frame = cap.read()
+        cap.release()
+
+        if not ret:
+            raise ValueError("No se pudo leer el primer fotograma del video. Verifica el formato del archivo.")
+        
+        return frame
+    except Exception as e:
+        raise ValueError(f"Error al procesar el video: {e}")
