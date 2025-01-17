@@ -1,15 +1,8 @@
 import streamlit as st
-import data_processing
-import analysis
-import visualization
 
-st.title("Sistema de Identificación de Leptospira Interrogans")
-
-menu = st.sidebar.selectbox("Seleccione una opción", ["Carga de Videos", "Análisis", "Visualización"])
-
-if menu == "Carga de Videos":
-    data_processing.process_videos()
-elif menu == "Análisis":
-    analysis.analyze_samples()
-elif menu == "Visualización":
-    visualization.show_results()
+# Carga de videos
+st.header("Carga de Video")
+uploaded_file = st.file_uploader("Sube un video en formato MP4 o AVI", type=["mp4", "avi"])
+if uploaded_file:
+    st.success(f"Archivo '{uploaded_file.name}' cargado exitosamente.")
+    st.video(uploaded_file)
