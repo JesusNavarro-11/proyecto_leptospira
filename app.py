@@ -7,6 +7,7 @@ from patient_info import collect_patient_info
 from PIL import Image
 import os
 import results_visualization as rv
+import pdf_generation as pdf
 
 # Mostrar el encabezado con logo y título
 display_header_with_logo()
@@ -117,6 +118,28 @@ if uploaded_file:
         # Mensaje de éxito final
         if st.session_state.processed:
             st.success("¡El proceso ha finalizado con éxito!")
+            # Ruta donde guardar el PDF temporal
+            output_pdf_path = "results_report.pdf"
+            
+            # Datos simulados
+            metrics = {"Precisión": "90%", "Sensibilidad": "85%", "Especificidad": "88%"}
+            morphological_info = {"Tamaño Promedio": "15 µm", "Forma": "Espiral", "Patrón de Movimiento": "Helicoidal"}
+            grad_cam_path = os.path.join("assets", "grad-cam simulacion.png")
+            
+            # Generar el PDF según la información registrada
+            if patient_data:
+                pdf.generate_pdf_with_info(output_pdf_path, patient_data, metrics, morphological_info, grad_cam_path)
+            else:
+                pdf.generate_pdf_without_info(output_pdf_path, metrics, morphological_info, grad_cam_path)
+            
+            # Mostrar un único botón para generar y descargar el PDF
+            with open(output_pdf_path, "rb") as pdf_file:
+                st.download_button(
+                    label="Generar y Descargar Reporte en PDF",
+                    data=pdf_file.read(),  # Lee el contenido del archivo
+                    file_name="Reporte_Leptospira.pdf",
+                    mime="application/pdf",
+                )
     except ValueError as e:
         st.error(f"Error: {e}")
 else:
