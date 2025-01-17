@@ -62,3 +62,25 @@ if uploaded_file:
 
     except ValueError as e:
         st.error(f"Error: {e}")
+
+
+# Preguntar al usuario si desea registrar información
+register_info = st.radio("¿Desea registrar información sobre la muestra?", ("Sí", "No"))
+
+patient_data = None
+if register_info == "Sí":
+    patient_data = collect_patient_info()
+
+# Simular la selección de ROI y procesamiento
+st.subheader("Procesamiento de Video")
+uploaded_video_path = "sample_video.mp4"  # Ruta simulada de video
+roi_coords = (50, 50, 350, 350)  # Coordenadas simuladas de la ROI
+
+with st.spinner("Procesando el video..."):
+    result = process_frames_with_clahe(uploaded_video_path, roi_coords)
+    st.success("Procesamiento finalizado.")
+    st.write(result)
+
+if patient_data:
+    st.subheader("Información del Paciente")
+    st.json(patient_data)
