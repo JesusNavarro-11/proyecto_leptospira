@@ -145,7 +145,7 @@ if uploaded_file:
            # Mostrar la opción de compartir información
             if patient_data and st.session_state.get("metrics") and st.session_state.get("morphological_info"):
                 ds.ask_to_share(
-                    patient_data,
+                    patient_data or {},  # Usa un diccionario vacío si no hay datos del paciente
                     st.session_state["metrics"],
                     st.session_state["morphological_info"],
                 )
