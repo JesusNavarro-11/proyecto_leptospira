@@ -3,6 +3,7 @@ from design import display_header_with_logo, display_centered_image
 from roi_selection import select_roi
 from data_processing import convert_to_mp4, extract_first_frame, preprocess_roi
 from PIL import Image
+import os
 
 # Mostrar el encabezado con logo y título
 display_header_with_logo()
@@ -14,10 +15,13 @@ uploaded_file = st.file_uploader("Sube un video para análisis", type=["mp4", "a
 
 if uploaded_file:
     try:
+        # Obtener la extensión del archivo cargado
+        file_extension = os.path.splitext(uploaded_file.name)[1][1:]  # Extraer extensión sin punto
+
         # Convertir a MP4 si es necesario
-        st.info("Convirtiendo video a formato MP4 si es necesario...")
-        mp4_video_path = convert_to_mp4(uploaded_file)
-        st.success("Video convertido a MP4 correctamente.")
+        st.info("Procesando el archivo...")
+        mp4_video_path = convert_to_mp4(uploaded_file, original_format=file_extension)
+        st.success("Archivo listo para el análisis.")
 
         # Extraer el primer fotograma
         frame = extract_first_frame(mp4_video_path)
