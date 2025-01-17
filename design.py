@@ -17,7 +17,7 @@ def add_background(image_url):
             background-repeat: no-repeat;
         }}
         .content-container {{
-            background-color: rgba(0, 0, 0, 0.7); /* Fondo negro semitransparente */
+            background-color: rgba(0, 0, 0, 0.4); /* Fondo negro semitransparente */
             padding: 20px;
             border-radius: 10px;
             width: 80%;
