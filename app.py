@@ -1,9 +1,12 @@
 import streamlit as st
+from design import display_header_with_logo
 from roi_selection import select_roi
 from data_processing import extract_first_frame, preprocess_roi
 
-st.title("Sistema de Identificación de Leptospira Interrogans")
+# Mostrar el encabezado con el logo
+display_header_with_logo()
 
+# Resto del flujo de la aplicación
 st.header("Carga de Video y Análisis Interactivo")
 
 # Cargar video
