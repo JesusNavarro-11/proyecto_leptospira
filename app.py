@@ -1,30 +1,13 @@
 import streamlit as st
 from roi_selection import select_roi
 from data_processing import extract_first_frame, preprocess_roi
-from design import add_background, start_content_container, end_content_container
 
-# Configuración del fondo
-add_background("asset/FondoLeptospiras4.jpg")  # Cambia la URL por tu imagen
-
-# Iniciar contenedor estilizado
-start_content_container()
-
-# Contenido principal
 st.title("Sistema de Identificación de Leptospira Interrogans")
-st.write("Este sistema permite cargar videos, analizar muestras y generar reportes interactivos.")
 
-# Widgets de ejemplo
-uploaded_file = st.file_uploader("Sube tu video de muestra", type=["mp4", "avi"])
-if uploaded_file:
-    st.success("¡Video cargado exitosamente!")
+st.header("Carga de Video y Análisis Interactivo")
 
-options = st.selectbox("Selecciona un modelo de análisis:", ["Modelo A", "Modelo B", "Modelo C"])
-st.write(f"Modelo seleccionado: {options}")
-
-st.button("Iniciar Análisis")
-
-# Finalizar contenedor estilizado
-end_content_container()
+# Cargar video
+uploaded_file = st.file_uploader("Sube un video para análisis", type=["mp4", "avi"])
 
 if uploaded_file:
     try:
