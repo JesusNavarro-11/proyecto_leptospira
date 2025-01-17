@@ -17,20 +17,20 @@ def select_roi(frame):
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image = Image.fromarray(frame_rgb)
 
-        # Redimensionar la imagen para despliegue
+        # Mostrar la imagen al usuario
         st.write("Haz clic en la zona de interés para seleccionar la ROI:")
-        clicked = st.image(image, use_column_width=True, output_format="auto")
-        
-        # Inicializar estado para las coordenadas si no existe
+        st.image(image, use_column_width=True)
+
+        # Inicializar el estado de las coordenadas si no existe
         if "roi_coords" not in st.session_state:
             st.session_state.roi_coords = None
 
-        # Procesar clic en la imagen
-        if clicked and st.session_state.roi_coords is None:
-            x, y = 200, 200  # Simulación de coordenadas
+        # Botón para simular la selección (reemplazar con interacción real si es necesario)
+        if st.button("Seleccionar ROI"):
+            x, y = 300, 300  # Coordenadas simuladas para pruebas
             st.session_state.roi_coords = (x, y)
 
-        # Si ya tenemos coordenadas, calcular ROI
+        # Si las coordenadas han sido seleccionadas
         if st.session_state.roi_coords:
             x, y = st.session_state.roi_coords
             st.write(f"Punto seleccionado: ({x}, {y})")
@@ -45,7 +45,7 @@ def select_roi(frame):
             st.image(roi, caption="ROI Seleccionada")
             return (x1, y1, x2, y2)
 
-        st.info("Haz clic en la imagen para seleccionar un punto.")
+        st.info("Haz clic en el botón para seleccionar un punto en la imagen.")
         return None
     except Exception as e:
         st.error(f"Error al seleccionar la ROI: {e}")
