@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import tempfile
 
-
 def extract_first_frame(video_file):
     """
     Extrae el primer fotograma de un archivo de video cargado.
@@ -13,21 +12,23 @@ def extract_first_frame(video_file):
     Returns:
         numpy array: Primer fotograma del video.
     """
-    # Guardar el archivo en un directorio temporal
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_file:
-        temp_file.write(video_file.read())
-        temp_path = temp_file.name
+    try:
+        # Guardar el archivo en un directorio temporal
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_file:
+            temp_file.write(video_file.read())
+            temp_path = temp_file.name
 
-    # Leer el video desde el archivo temporal
-    cap = cv2.VideoCapture(temp_path)
-    ret, frame = cap.read()
-    cap.release()
+        # Leer el video desde el archivo temporal
+        cap = cv2.VideoCapture(temp_path)
+        ret, frame = cap.read()
+        cap.release()
 
-    if ret:
+        if not ret:
+            raise ValueError("No se pudo leer el primer fotograma del video. Verifica el formato del archivo.")
+        
         return frame
-    else:
-        raise ValueError("No se pudo leer el primer fotograma del video.")
-
+    except Exception as e:
+        raise ValueError(f"Error al procesar el video: {e}")
 
 def preprocess_roi(frame, roi_coords, target_size=(300, 300)):
     """
@@ -42,28 +43,17 @@ def preprocess_roi(frame, roi_coords, target_size=(300, 300)):
         numpy array: ROI preprocesada lista para el modelo.
     """
     x1, y1, x2, y2 = roi_coords
-    # Recortar la ROI
-    roi = frame[int(y1):int(y2), int(x1):int(x2)]
-    # Redimensionar la ROI a 300x300
-    roi_resized = cv2.resize(roi, target_size)
-    # Normalización (opcional, según lo esperado por el modelo)
-    roi_normalized = roi_resized / 255.0
-    return np.expand_dims(roi_normalized, axis=0)  # Agregar dimensión batch
-
-def extract_first_frame(video_file):
-    """
-    Extrae el primer fotograma de un video.
-
-    Args:
-        video_file: Archivo de video cargado por el usuario.
-
-    Returns:
-        numpy array: Primer fotograma del video.
-    """
-    cap = cv2.VideoCapture(video_file)
-    ret, frame = cap.read()
-    cap.release()
-    if ret:
-        return frame
-    else:
-        raise ValueError("No se pudo leer el primer fotograma del video.")
+    # Validar coordenadas de ROI
+    if x1 >= x2 or y1 >= y2:
+        raise ValueError("Las coordenadas de la ROI son inválidas. Asegúrate de que x2 > x1 y y2 > y1.")
+    
+    try:
+        # Recortar la ROI
+        roi = frame[int(y1):int(y2), int(x1):int(x2)]
+        # Redimensionar la ROI a 300x300
+        roi_resized = cv2.resize(roi, target_size)
+        # Normalización
+        roi_normalized = roi_resized / 255.0
+        return np.expand_dims(roi_normalized, axis=0)  # Agregar dimensión batch
+    except Exception as e:
+        raise ValueError(f"Error al procesar la ROI: {e}")
