@@ -1,4 +1,7 @@
 import streamlit as st
+import base64
+from io import BytesIO
+from PIL import Image
 
 def display_centered_image(image, caption=None, width=None):
     """
@@ -9,26 +12,20 @@ def display_centered_image(image, caption=None, width=None):
         caption (str): Texto opcional para mostrar debajo de la imagen.
         width (int): Ancho opcional para la imagen.
     """
+    # Si es una imagen PIL, conviértela a base64
+    if isinstance(image, Image.Image):
+        buffered = BytesIO()
+        image.save(buffered, format="PNG")
+        img_base64 = base64.b64encode(buffered.getvalue()).decode()
+        image_src = f"data:image/png;base64,{img_base64}"
+    else:
+        # Si es una ruta de imagen
+        image_src = image
+
     html_code = f"""
         <div style="text-align: center;">
-            <img src="data:image/png;base64,{image}" alt="image" style="width: {width}px; max-width: 100%;">
-            <p style="font-size: 14px; color: #555;">{caption}</p>
-            <
-
-def display_header_with_logo():
+            <img src="{image_src}" style="width: {width}px; max-width: 100%;" alt="Imagen">
+            {'<p style="font-size: 14px; color: #555;">' + caption + '</p>' if caption else ''}
+        </div>
     """
-    Muestra el logo y el título de la aplicación de forma modular.
-    """
-    # Dividir la pantalla en dos columnas para el logo y el título
-    col1, col2 = st.columns([1, 5])  # Ajusta las proporciones según sea necesario
-    with col1:
-        st.image("assets/FondoLeptospiras4.jpg", width=80)  # Ruta del logo
-    with col2:
-        st.markdown(
-            """
-            <h1 style="color: #333; font-size: 28px; margin-top: 20px;">
-                Sistema de Identificación de Leptospira Interrogans
-            </h1>
-            """,
-            unsafe_allow_html=True
-        )
+    st.markdown(html_code, unsafe_allow_html=True)
