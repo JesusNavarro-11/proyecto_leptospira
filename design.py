@@ -1,43 +1,19 @@
 import streamlit as st
 
-def add_background(image_url):
+def display_header_with_logo():
     """
-    Agrega un fondo personalizado a la aplicación.
-    
-    Args:
-        image_url (str): URL o ruta local de la imagen a usar como fondo.
+    Muestra el logo y el título de la aplicación de forma modular.
     """
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background: url("{image_url}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }}
-        .content-container {{
-            background-color: rgba(0, 0, 0, 0.4); /* Fondo negro semitransparente */
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            margin: 20px auto;
-            color: white; /* Texto blanco para buen contraste */
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); /* Sombra */
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-def start_content_container():
-    """
-    Inicia el contenedor de contenido estilizado.
-    """
-    st.markdown('<div class="content-container">', unsafe_allow_html=True)
-
-def end_content_container():
-    """
-    Finaliza el contenedor de contenido estilizado.
-    """
-    st.markdown('</div>', unsafe_allow_html=True)
+    # Dividir la pantalla en dos columnas para el logo y el título
+    col1, col2 = st.columns([1, 5])  # Ajusta las proporciones según sea necesario
+    with col1:
+        st.image("assets/logo.png", width=80)  # Ruta del logo
+    with col2:
+        st.markdown(
+            """
+            <h1 style="color: #333; font-size: 28px; margin-top: 20px;">
+                Sistema de Identificación de Leptospira Interrogans
+            </h1>
+            """,
+            unsafe_allow_html=True
+        )
