@@ -71,16 +71,22 @@ patient_data = None
 if register_info == "Sí":
     patient_data = collect_patient_info()
 
-# Simular la selección de ROI y procesamiento
-st.subheader("Procesamiento de Video")
-uploaded_video_path = "sample_video.mp4"  # Ruta simulada de video
-roi_coords = (50, 50, 350, 350)  # Coordenadas simuladas de la ROI
+# Cargar video
+uploaded_video = st.file_uploader("Sube un video para análisis", type=["mp4", "avi", "mov", "mkv"])
+if uploaded_video:
+    # Simular la selección de ROI
+    st.subheader("Selecciona el área de interés (ROI)")
+    roi_coords = st.slider("Simula las coordenadas de la ROI (x1, y1, x2, y2)", 0, 500, (50, 50, 350, 350))
 
-with st.spinner("Procesando el video..."):
-    result = process_frames_with_clahe(uploaded_video_path, roi_coords)
-    st.success("Procesamiento finalizado.")
-    st.write(result)
+    if st.button("Procesar Video"):
+        # Aquí comienza el procesamiento solo después de la selección
+        with st.spinner("Procesando el video..."):
+            result = process_frames_with_clahe("uploaded_video_path.mp4", roi_coords)
+            st.success("Procesamiento finalizado.")
+            st.write(result)
 
-if patient_data:
-    st.subheader("Información del Paciente")
-    st.json(patient_data)
+        if patient_data:
+            st.subheader("Información del Paciente")
+            st.json(patient_data)
+else:
+    st.info("Por favor, sube un video para comenzar.")
