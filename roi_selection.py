@@ -57,7 +57,7 @@ def select_roi(frame):
             roi = frame[int(y1 * y_ratio):int(y2 * y_ratio), int(x1 * x_ratio):int(x2 * x_ratio)]
 
             # Mostrar la ROI seleccionada
-            st.image(roi, caption="ROI Seleccionada (300x300)", use_container_width=True=True)
+            st.image(roi, caption="ROI Seleccionada (300x300)", use_container_width=True)
             return (int(x1 * x_ratio), int(y1 * y_ratio), int(x2 * x_ratio), int(y2 * y_ratio))
 
         st.info("Ajusta los deslizantes y haz clic en 'Confirmar Selección' para continuar.")
