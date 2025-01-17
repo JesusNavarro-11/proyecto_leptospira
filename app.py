@@ -6,7 +6,7 @@ from design import add_background  # Importar el módulo de diseño
 st.title("Sistema de Identificación de Leptospira Interrogans")
 
 # Agregar fondo
-add_background("assets/FondoLeptospiras1.jpg")  # Ajusta la ruta según tu estructura
+add_background("assets/FondoLeptospiras4.jpg")  # Ajusta la ruta según tu estructura
 
 
 st.header("Carga de Video y Análisis Interactivo")
