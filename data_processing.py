@@ -1,5 +1,33 @@
 import cv2
 import numpy as np
+import tempfile
+
+
+def extract_first_frame(video_file):
+    """
+    Extrae el primer fotograma de un archivo de video cargado.
+    
+    Args:
+        video_file: Objeto subido (BytesIO) desde Streamlit.
+
+    Returns:
+        numpy array: Primer fotograma del video.
+    """
+    # Guardar el archivo en un directorio temporal
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_file:
+        temp_file.write(video_file.read())
+        temp_path = temp_file.name
+
+    # Leer el video desde el archivo temporal
+    cap = cv2.VideoCapture(temp_path)
+    ret, frame = cap.read()
+    cap.release()
+
+    if ret:
+        return frame
+    else:
+        raise ValueError("No se pudo leer el primer fotograma del video.")
+
 
 def preprocess_roi(frame, roi_coords, target_size=(300, 300)):
     """
