@@ -86,6 +86,20 @@ if uploaded_file:
                     st.success("Procesamiento finalizado.")
                     st.write(result)
 
+                            # Mostrar resultados de la simulación
+                    st.header("Resultados de la Simulación")
+            
+                    # Simulación de Grad-CAM
+                    frame = np.zeros((300, 300, 3), dtype=np.uint8)  # Simular un frame vacío
+                    grad_cam_overlay = np.zeros((300, 300, 3), dtype=np.uint8)  # Simular un overlay
+            
+                    # Visualizar Grad-CAM
+                    rv.display_grad_cam_result(frame, grad_cam_overlay)
+            
+                    # Mostrar métricas y datos morfológicos
+                    rv.display_metrics()
+                    rv.display_morphological_info()
+
                 # Mostrar información del paciente si existe
                 if patient_data:
                     st.subheader("Información del Paciente")
@@ -104,15 +118,3 @@ if uploaded_file:
 else:
     st.info("Por favor, sube un video para comenzar.")
 
-
-    # Después de procesar el video y/o registrar información
-if st.button("Mostrar Resultados de la Simulación"):
-    st.header("Resultados de la Simulación")
-
-    # Simulación: Frame original y Grad-CAM overlay
-    frame = np.zeros((300, 300, 3), dtype=np.uint8)  # Simular un frame vacío
-    grad_cam_overlay = np.zeros((300, 300, 3), dtype=np.uint8)  # Simular un overlay
-
-    rv.display_grad_cam_result(frame, grad_cam_overlay)
-    rv.display_metrics()
-    rv.display_morphological_info()
