@@ -3,6 +3,23 @@ import base64
 from io import BytesIO
 from PIL import Image
 
+def display_header_with_logo():
+    """
+    Muestra el logo y el título de la aplicación de forma modular.
+    """
+    col1, col2 = st.columns([1, 5])  # Ajustar las proporciones entre logo y título
+    with col1:
+        st.image("assets/logo.png", width=80)  # Ruta del logo
+    with col2:
+        st.markdown(
+            """
+            <h1 style="color: #333; font-size: 28px; margin-top: 20px;">
+                Sistema de Identificación de Leptospira Interrogans
+            </h1>
+            """,
+            unsafe_allow_html=True
+        )
+
 def display_centered_image(image, caption=None, width=None):
     """
     Muestra una imagen centrada en la interfaz de Streamlit.
