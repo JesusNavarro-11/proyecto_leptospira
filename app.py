@@ -33,4 +33,6 @@ if uploaded_file:
             # Preprocesar ROI
             roi_preprocessed = preprocess_roi(frame, (x1, y1, x2, y2))
             st.success("ROI preprocesada y lista para el modelo.")
-            display_centered_image(Image.fromarray(roi_preprocessed[0]), caption="ROI Redimensionada (300x300)", width
+            display_centered_image(Image.fromarray(roi_preprocessed[0]), caption="ROI Redimensionada (300x300)", width=300)
+    except ValueError as e:
+        st.error(f"Error: {e}")
