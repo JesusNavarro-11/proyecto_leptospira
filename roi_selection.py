@@ -1,11 +1,11 @@
 import streamlit as st
-from PIL import Image
+from PIL import Image, ImageDraw
 import cv2
 import numpy as np
 
 def select_roi(frame):
     """
-    Permite seleccionar un punto en la imagen usando controles interactivos de Streamlit.
+    Permite seleccionar un punto en la imagen usando controles interactivos y muestra ejes en tiempo real.
 
     Args:
         frame (numpy array): Fotograma del video.
@@ -24,13 +24,21 @@ def select_roi(frame):
         display_height = int(display_width * aspect_ratio)
         image_resized = image.resize((display_width, display_height))
 
-        # Mostrar la imagen al usuario
-        st.image(image_resized, caption="Selecciona la zona de interés (ROI)", use_container_width=True)
-
-        # Controles deslizantes para seleccionar las coordenadas de la ROI
+        # Controles deslizantes para seleccionar las coordenadas
         st.write("Usa los deslizantes para seleccionar el centro de la ROI:")
         x = st.slider("Coordenada X (horizontal)", 0, display_width, display_width // 2)
         y = st.slider("Coordenada Y (vertical)", 0, display_height, display_height // 2)
+
+        # Dibujar los ejes sobre la imagen
+        image_with_axes = image_resized.copy()
+        draw = ImageDraw.Draw(image_with_axes)
+        # Línea horizontal
+        draw.line([(0, y), (display_width, y)], fill="red", width=2)
+        # Línea vertical
+        draw.line([(x, 0), (x, display_height)], fill="red", width=2)
+
+        # Mostrar la imagen con los ejes
+        st.image(image_with_axes, caption="Vista previa con ejes", use_container_width=True)
 
         # Botón para confirmar la selección
         if st.button("Confirmar Selección"):
@@ -43,7 +51,7 @@ def select_roi(frame):
             x2 = min(display_width, x + half_size)
             y2 = min(display_height, y + half_size)
 
-            # Recortar la ROI original a partir de las coordenadas
+            # Escalar las coordenadas a la resolución original
             x_ratio = frame.shape[1] / display_width
             y_ratio = frame.shape[0] / display_height
             roi = frame[int(y1 * y_ratio):int(y2 * y_ratio), int(x1 * x_ratio):int(x2 * x_ratio)]
