@@ -20,11 +20,22 @@ def crop_video_to_roi(video_file_path, roi_coords, output_path="cropped_video.mp
 
     try:
         clip = VideoFileClip(video_file_path)
+
+        # Validar dimensiones del video
+        video_width, video_height = clip.size
+
+        # Ajustar coordenadas si están fuera de los límites
+        x1 = max(0, x1)
+        y1 = max(0, y1)
+        x2 = min(video_width, x2)
+        y2 = min(video_height, y2)
+
         cropped_clip = clip.crop(x1=x1, y1=y1, x2=x2, y2=y2)
         cropped_clip.write_videofile(output_path, codec="libx264", audio_codec="aac", verbose=False, logger=None)
         cropped_clip.close()
         return output_path
     except Exception as e:
+        print(f"Error detallado: {e}")
         raise ValueError(f"Error al recortar el video: {e}")
 
 
