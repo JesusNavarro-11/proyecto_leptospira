@@ -1,45 +1,29 @@
 import streamlit as st
-from PIL import Image
-from streamlit_drawable_canvas import st_canvas
-from data_processing import extract_first_frame
-import cv2
+from roi_selection import select_roi
+from data_processing import extract_first_frame, preprocess_roi
 
 st.title("Sistema de Identificación de Leptospira Interrogans")
 
-st.header("Carga de Video y Selección de ROI")
+st.header("Carga de Video y Análisis Interactivo")
 
+# Cargar video
 uploaded_file = st.file_uploader("Sube un video para análisis", type=["mp4", "avi"])
 
 if uploaded_file:
     try:
-        # Extraer el primer fotograma del video
+        # Extraer el primer fotograma
         frame = extract_first_frame(uploaded_file)
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convertir a RGB
-        image = Image.fromarray(frame_rgb)
 
-        # Redimensionar imagen
-        image.thumbnail((800, 800), Image.ANTIALIAS)
+        # Selección interactiva de ROI
+        roi_coords = select_roi(frame)
 
-        # Mostrar lienzo interactivo
-        st.write("Selecciona el punto central de la ROI haciendo clic en el fotograma:")
-        canvas_result = st_canvas(
-            fill_color="rgba(255, 0, 0, 0.3)",
-            stroke_width=1,
-            background_image=image,
-            update_streamlit=True,
-            height=image.height,
-            width=image.width,
-            drawing_mode="point",
-            key="canvas",
-        )
+        if roi_coords:
+            x1, y1, x2, y2 = roi_coords
+            st.write(f"Coordenadas de ROI seleccionada: ({x1}, {y1}), ({x2}, {y2})")
 
-        # Procesar selección del usuario
-        if canvas_result.json_data is not None:
-            for obj in canvas_result.json_data["objects"]:
-                x = int(obj["left"])
-                y = int(obj["top"])
-                break
-
-            st.write(f"Punto seleccionado: ({x}, {y})")
-    except Exception as e:
-        st.error(f"Error al procesar el video o el lienzo: {e}")
+            # Preprocesar ROI
+            roi_preprocessed = preprocess_roi(frame, (x1, y1, x2, y2))
+            st.success("ROI preprocesada y lista para el modelo.")
+            st.image(roi_preprocessed[0], caption="ROI Redimensionada (300x300)")
+    except ValueError as e:
+        st.error(f"Error: {e}")
