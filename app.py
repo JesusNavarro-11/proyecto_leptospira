@@ -1,10 +1,11 @@
 import streamlit as st
-from design import display_centered_image
+from design import display_header_with_logo, display_centered_image
 from roi_selection import select_roi
 from data_processing import extract_first_frame, preprocess_roi
 from PIL import Image
 
-st.title("Sistema de Identificación de Leptospira Interrogans")
+# Mostrar el encabezado con logo y título
+display_header_with_logo()
 
 st.header("Carga de Video y Análisis Interactivo")
 
