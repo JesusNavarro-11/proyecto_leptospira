@@ -8,6 +8,7 @@ from PIL import Image
 import os
 import results_visualization as rv
 import pdf_generation as pdf
+import data_sharing as ds
 
 # Mostrar el encabezado con logo y título
 display_header_with_logo()
@@ -140,6 +141,18 @@ if uploaded_file:
                     file_name="Reporte_Leptospira.pdf",
                     mime="application/pdf",
                 )
+
+           # Mostrar la opción de compartir información
+            if patient_data and st.session_state.get("metrics") and st.session_state.get("morphological_info"):
+                ds.ask_to_share(
+                    patient_data,
+                    st.session_state["metrics"],
+                    st.session_state["morphological_info"],
+                )
+            else:
+                st.info("Los resultados son privados. No se compartirá ninguna información.") 
+
+
     except ValueError as e:
         st.error(f"Error: {e}")
 else:
