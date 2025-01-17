@@ -30,6 +30,8 @@ def select_roi(frame):
         tuple: Coordenadas de la ROI (x1, y1, x2, y2) o None si no se seleccionó un punto.
     """
     try:
+        st.write("Inicializando selección de ROI...")  # Mensaje de depuración
+
         # Convertir el fotograma a formato PIL
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image = Image.fromarray(frame_rgb)
@@ -40,11 +42,13 @@ def select_roi(frame):
         display_height = int(display_width * aspect_ratio)
         image = image.resize((display_width, display_height))
 
+        st.write("Imagen cargada y redimensionada.")  # Mensaje de depuración
+
         # Convertir imagen a base64
         image_base64 = image_to_base64(image)
 
         # Mostrar imagen y capturar clics
-        st.write("Haz clic en la imagen para seleccionar el punto central de la ROI:")
+        st.write("Mostrando imagen para selección de ROI.")
         html_code = f"""
             <div>
                 <img src="data:image/png;base64,{image_base64}" 
@@ -68,15 +72,23 @@ def select_roi(frame):
         st.markdown(html_code, unsafe_allow_html=True)
 
         # Leer coordenadas desde los parámetros de la URL
-        query_params = st.query_params  # Actualizado a st.query_params
+        query_params = st.query_params  # Cambiado a st.query_params
+        st.write(f"Parámetros recibidos: {query_params}")  # Mostrar parámetros actuales
+
         if "coords" in query_params:
-            x, y = map(int, query_params["coords"][0].split(","))
+            coords = query_params["coords"][0]
+            st.write(f"Coordenadas capturadas: {coords}")  # Mostrar coordenadas capturadas
+
+            # Procesar coordenadas
+            x, y = map(int, coords.split(","))
             st.write(f"Punto seleccionado: ({x}, {y})")
 
             # Calcular ROI alrededor del punto seleccionado
             half_size = 150  # Mitad de 300x300
             x1, y1 = max(0, x - half_size), max(0, y - half_size)
             x2, y2 = min(image.width, x + half_size), min(image.height, y + half_size)
+
+            st.write(f"ROI calculada: ({x1}, {y1}, {x2}, {y2})")
 
             # Mostrar vista previa de la ROI
             roi = frame[y1:y2, x1:x2]
