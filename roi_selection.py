@@ -4,7 +4,7 @@ import cv2
 
 def select_roi(frame):
     """
-    Permite seleccionar un punto en la imagen para calcular la ROI.
+    Permite seleccionar un punto en la imagen para calcular la ROI mediante clics reales.
 
     Args:
         frame (numpy array): Fotograma del video.
@@ -17,22 +17,40 @@ def select_roi(frame):
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image = Image.fromarray(frame_rgb)
 
-        # Mostrar la imagen al usuario
-        st.write("Haz clic en la zona de interés para seleccionar la ROI:")
-        st.image(image, use_column_width=True)
+        # Redimensionar la imagen para mostrarla de forma más manejable
+        display_width = 800
+        aspect_ratio = image.height / image.width
+        display_height = int(display_width * aspect_ratio)
+        image = image.resize((display_width, display_height))
 
-        # Inicializar el estado de las coordenadas si no existe
-        if "roi_coords" not in st.session_state:
-            st.session_state.roi_coords = None
+        # Mostrar la imagen y capturar clics mediante HTML/JS
+        st.write("Haz clic en la imagen para seleccionar el punto central de la ROI:")
+        html_code = f"""
+            <div>
+                <img src="data:image/png;base64,{image_to_base64(image)}" 
+                     style="width:{display_width}px;height:{display_height}px;cursor:crosshair;" 
+                     onclick="getClickPosition(event)">
+            </div>
+            <script>
+                function getClickPosition(event) {{
+                    var rect = event.target.getBoundingClientRect();
+                    var x = Math.round(event.clientX - rect.left);
+                    var y = Math.round(event.clientY - rect.top);
+                    document.getElementById("coords").value = x + "," + y;
+                    document.getElementById("submit-coords").click();
+                }}
+            </script>
+            <form action="" method="GET">
+                <input type="hidden" id="coords" name="coords" value="">
+                <button id="submit-coords" style="display:none;">Submit</button>
+            </form>
+        """
+        st.markdown(html_code, unsafe_allow_html=True)
 
-        # Botón para simular la selección (reemplazar con interacción real si es necesario)
-        if st.button("Seleccionar ROI"):
-            x, y = 300, 300  # Coordenadas simuladas para pruebas
-            st.session_state.roi_coords = (x, y)
-
-        # Si las coordenadas han sido seleccionadas
-        if st.session_state.roi_coords:
-            x, y = st.session_state.roi_coords
+        # Leer coordenadas del clic desde la URL
+        query_params = st.experimental_get_query_params()
+        if "coords" in query_params:
+            x, y = map(int, query_params["coords"][0].split(","))
             st.write(f"Punto seleccionado: ({x}, {y})")
 
             # Calcular ROI alrededor del punto seleccionado
@@ -45,8 +63,26 @@ def select_roi(frame):
             st.image(roi, caption="ROI Seleccionada")
             return (x1, y1, x2, y2)
 
-        st.info("Haz clic en el botón para seleccionar un punto en la imagen.")
+        st.info("Haz clic en la imagen para seleccionar un punto.")
         return None
     except Exception as e:
         st.error(f"Error al seleccionar la ROI: {e}")
         return None
+
+def image_to_base64(image):
+    """
+    Convierte una imagen PIL a base64.
+
+    Args:
+        image (PIL.Image): Imagen a convertir.
+
+    Returns:
+        str: Representación base64 de la imagen.
+    """
+    import base64
+    from io import BytesIO
+
+    buffer = BytesIO()
+    image.save(buffer, format="PNG")
+    buffer.seek(0)
+    return base64.b64encode(buffer.read()).decode()
