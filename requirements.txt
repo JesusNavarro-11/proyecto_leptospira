@@ -1,5 +1,5 @@
-streamlit>=1.22.0
+moviepy
 opencv-python-headless
-Pillow>=10.0
+Pillow
 numpy
-
+streamlit
