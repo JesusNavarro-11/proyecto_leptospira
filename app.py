@@ -88,9 +88,6 @@ if uploaded_file:
 
                             # Mostrar resultados de la simulación
                     st.header("Resultados de la Simulación")
-            
-                   # Mostrar resultados de la simulación
-                    st.header("Resultados de la Simulación")
                     
                     # Cargar imagen simulada como Grad-CAM
                     grad_cam_path = os.path.join("assets", "grad-cam simulacion.png")
