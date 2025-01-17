@@ -9,7 +9,7 @@ def display_header_with_logo():
     """
     col1, col2 = st.columns([1, 5])  # Ajustar las proporciones entre logo y título
     with col1:
-        st.image("assets/logo.png", width=80)  # Ruta del logo
+        st.image("assets/FondoLeptospiras4.jpg", width=80)  # Ruta del logo
     with col2:
         st.markdown(
             """
