@@ -1,8 +1,13 @@
 import streamlit as st
 from roi_selection import select_roi
 from data_processing import extract_first_frame, preprocess_roi
+from design import add_background  # Importar el módulo de diseño
 
 st.title("Sistema de Identificación de Leptospira Interrogans")
+
+# Agregar fondo
+add_background("assets/FondoLeptospiras1.png")  # Ajusta la ruta según tu estructura
+
 
 st.header("Carga de Video y Análisis Interactivo")
 
