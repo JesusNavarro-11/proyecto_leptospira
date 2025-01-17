@@ -6,6 +6,7 @@ from video_processing import process_frames_with_clahe
 from patient_info import collect_patient_info
 from PIL import Image
 import os
+import results_visualization as rv
 
 # Mostrar el encabezado con logo y título
 display_header_with_logo()
@@ -92,6 +93,18 @@ if uploaded_file:
 
                 # Marcar como procesado
                 st.session_state.processed = True
+
+                # Después de procesar el video y/o registrar información
+            if st.button("Mostrar Resultados de la Simulación"):
+                st.header("Resultados de la Simulación")
+            
+                # Simulación: Frame original y Grad-CAM overlay
+                frame = np.zeros((300, 300, 3), dtype=np.uint8)  # Simular un frame vacío
+                grad_cam_overlay = np.zeros((300, 300, 3), dtype=np.uint8)  # Simular un overlay
+            
+                rv.display_grad_cam_result(frame, grad_cam_overlay)
+                rv.display_metrics()
+                rv.display_morphological_info()
 
         # Mensaje de éxito final
         if st.session_state.processed:
