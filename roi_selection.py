@@ -19,7 +19,7 @@ def select_roi(frame):
         image = Image.fromarray(frame_rgb)
 
         # Redimensionar la imagen para evitar problemas de tamaño
-        image.thumbnail((800, 800), Image.ANTIALIAS)
+        image.thumbnail((800, 800), Image.Resampling.LANCZOS)
 
         # Mostrar lienzo interactivo
         st.write("Selecciona el punto central de la ROI haciendo clic en el fotograma:")
