@@ -1,4 +1,5 @@
 from moviepy.editor import VideoFileClip
+import os
 
 def crop_video_to_roi(video_file_path, roi_coords, output_path="cropped_video.mp4"):
     """
@@ -12,6 +13,9 @@ def crop_video_to_roi(video_file_path, roi_coords, output_path="cropped_video.mp
     Returns:
         str: Ruta del video recortado.
     """
+    if not os.path.exists(video_file_path):
+        raise ValueError(f"El archivo de video no existe: {video_file_path}")
+
     x1, y1, x2, y2 = roi_coords
 
     try:
