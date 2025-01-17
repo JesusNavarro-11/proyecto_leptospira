@@ -1,27 +1,10 @@
 import streamlit as st
 from PIL import Image
-import base64
-from io import BytesIO
 import cv2
-
-def image_to_base64(image):
-    """
-    Convierte una imagen PIL a una cadena base64.
-
-    Args:
-        image (PIL.Image): Imagen a convertir.
-
-    Returns:
-        str: Representación base64 de la imagen.
-    """
-    buffered = BytesIO()
-    image.save(buffered, format="PNG")
-    img_str = base64.b64encode(buffered.getvalue()).decode()
-    return f"data:image/png;base64,{img_str}"
 
 def select_roi(frame):
     """
-    Permite seleccionar un punto en la imagen y calcula la ROI.
+    Permite seleccionar un punto en la imagen para calcular la ROI.
 
     Args:
         frame (numpy array): Fotograma del video.
@@ -35,32 +18,25 @@ def select_roi(frame):
         image = Image.fromarray(frame_rgb)
 
         # Redimensionar la imagen para despliegue
-        image.thumbnail((800, 800), Image.Resampling.LANCZOS)
+        st.write("Haz clic en la zona de interés para seleccionar la ROI:")
+        clicked = st.image(image, use_column_width=True, output_format="auto")
+        
+        # Inicializar estado para las coordenadas si no existe
+        if "roi_coords" not in st.session_state:
+            st.session_state.roi_coords = None
 
-        # Convertir la imagen a base64
-        image_base64 = image_to_base64(image)
-        st.write("Haz clic en la zona de interés:")
-        click_url = f'<img src="{image_base64}" style="cursor: crosshair;" usemap="#image-map">'
-        st.markdown(click_url, unsafe_allow_html=True)
+        # Procesar clic en la imagen
+        if clicked and st.session_state.roi_coords is None:
+            x, y = 200, 200  # Simulación de coordenadas
+            st.session_state.roi_coords = (x, y)
 
-        # Crear un mapa de clics
-        map_html = """
-        <map name="image-map">
-            <area shape="rect" coords="0,0,{width},{height}" href="?x=50&y=50">
-        </map>
-        """.format(width=image.width, height=image.height)
-
-        st.markdown(map_html, unsafe_allow_html=True)
-
-        # Procesar coordenadas desde la URL
-        query_params = st.experimental_get_query_params()
-        if "x" in query_params and "y" in query_params:
-            x = int(query_params["x"][0])
-            y = int(query_params["y"][0])
+        # Si ya tenemos coordenadas, calcular ROI
+        if st.session_state.roi_coords:
+            x, y = st.session_state.roi_coords
             st.write(f"Punto seleccionado: ({x}, {y})")
 
             # Calcular ROI alrededor del punto seleccionado
-            half_size = 150
+            half_size = 150  # Mitad de 300x300
             x1, y1 = max(0, x - half_size), max(0, y - half_size)
             x2, y2 = min(frame.shape[1], x + half_size), min(frame.shape[0], y + half_size)
 
