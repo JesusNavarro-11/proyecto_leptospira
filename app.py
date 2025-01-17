@@ -94,17 +94,7 @@ if uploaded_file:
                 # Marcar como procesado
                 st.session_state.processed = True
 
-                # Después de procesar el video y/o registrar información
-            if st.button("Mostrar Resultados de la Simulación"):
-                st.header("Resultados de la Simulación")
-            
-                # Simulación: Frame original y Grad-CAM overlay
-                frame = np.zeros((300, 300, 3), dtype=np.uint8)  # Simular un frame vacío
-                grad_cam_overlay = np.zeros((300, 300, 3), dtype=np.uint8)  # Simular un overlay
-            
-                rv.display_grad_cam_result(frame, grad_cam_overlay)
-                rv.display_metrics()
-                rv.display_morphological_info()
+
 
         # Mensaje de éxito final
         if st.session_state.processed:
@@ -113,3 +103,16 @@ if uploaded_file:
         st.error(f"Error: {e}")
 else:
     st.info("Por favor, sube un video para comenzar.")
+
+
+    # Después de procesar el video y/o registrar información
+if st.button("Mostrar Resultados de la Simulación"):
+    st.header("Resultados de la Simulación")
+
+    # Simulación: Frame original y Grad-CAM overlay
+    frame = np.zeros((300, 300, 3), dtype=np.uint8)  # Simular un frame vacío
+    grad_cam_overlay = np.zeros((300, 300, 3), dtype=np.uint8)  # Simular un overlay
+
+    rv.display_grad_cam_result(frame, grad_cam_overlay)
+    rv.display_metrics()
+    rv.display_morphological_info()
