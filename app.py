@@ -58,13 +58,25 @@ if uploaded_file:
             roi_image = Image.fromarray(roi_for_display)
             display_centered_image(roi_image, caption="ROI Redimensionada (300x300)", width=300)
 
-            # Paso 3: Preguntar si desea registrar información
-            if st.session_state.register_info is None:
-                st.session_state.register_info = st.radio("¿Desea registrar información sobre la muestra?", ("Sí", "No"))
-
+            # Preguntar al usuario si desea registrar información (mantener el radio visible)
+            if "register_info" not in st.session_state:
+                st.session_state.register_info = None
+            
+            # Mostrar las opciones de Sí/No
+            st.session_state.register_info = st.radio(
+                "¿Desea registrar información sobre la muestra?", 
+                ("Sí", "No"), 
+                index=0 if st.session_state.register_info == "Sí" else 1
+            )
+            
+            # Mostrar formulario solo si se selecciona "Sí"
             patient_data = None
             if st.session_state.register_info == "Sí":
+                st.info("Por favor, complete la información sobre la muestra.")
                 patient_data = collect_patient_info()
+            else:
+                st.write("No se registrará información adicional para esta muestra.")
+
 
             # Paso 4: Procesar el video
             if st.button("Procesar Video"):
