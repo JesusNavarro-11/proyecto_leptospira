@@ -68,7 +68,7 @@ def select_roi(frame):
         st.markdown(html_code, unsafe_allow_html=True)
 
         # Leer coordenadas desde los parámetros de la URL
-        query_params = st.experimental_get_query_params()
+        query_params = st.query_params  # Actualizado a st.query_params
         if "coords" in query_params:
             x, y = map(int, query_params["coords"][0].split(","))
             st.write(f"Punto seleccionado: ({x}, {y})")
