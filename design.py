@@ -1,7 +1,5 @@
 import streamlit as st
 
-import streamlit as st
-
 def display_centered_image(image, caption=None, width=None):
     """
     Muestra una imagen centrada en la interfaz de Streamlit.
