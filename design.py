@@ -1,5 +1,22 @@
 import streamlit as st
 
+import streamlit as st
+
+def display_centered_image(image, caption=None, width=None):
+    """
+    Muestra una imagen centrada en la interfaz de Streamlit.
+
+    Args:
+        image (str or PIL.Image): Ruta o imagen a mostrar.
+        caption (str): Texto opcional para mostrar debajo de la imagen.
+        width (int): Ancho opcional para la imagen.
+    """
+    html_code = f"""
+        <div style="text-align: center;">
+            <img src="data:image/png;base64,{image}" alt="image" style="width: {width}px; max-width: 100%;">
+            <p style="font-size: 14px; color: #555;">{caption}</p>
+            <
+
 def display_header_with_logo():
     """
     Muestra el logo y el título de la aplicación de forma modular.
