@@ -13,17 +13,19 @@ uploaded_file = st.file_uploader("Sube un video para análisis", type=["mp4", "a
 
 if uploaded_file:
     try:
-        # Extraer el primer fotograma del video
-        frame = extract_first_frame(uploaded_file)
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convertir a RGB para PIL
+               # Convertir el fotograma a formato PIL
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image = Image.fromarray(frame_rgb)
-
+        
+        # Redimensionar la imagen para evitar problemas con tamaños grandes
+        image.thumbnail((800, 800), Image.ANTIALIAS)
+        
         # Mostrar lienzo interactivo
         st.write("Selecciona el punto central de la ROI haciendo clic en el fotograma:")
         canvas_result = st_canvas(
             fill_color="rgba(255, 0, 0, 0.3)",  # Color de relleno (no se usa aquí)
             stroke_width=1,
-            background_image=image,
+            background_image=image,  # Imagen de fondo en formato PIL
             update_streamlit=True,
             height=image.height,
             width=image.width,
