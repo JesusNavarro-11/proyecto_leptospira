@@ -7,7 +7,7 @@ def display_header_with_logo():
     # Dividir la pantalla en dos columnas para el logo y el título
     col1, col2 = st.columns([1, 5])  # Ajusta las proporciones según sea necesario
     with col1:
-        st.image("assets/logo.png", width=80)  # Ruta del logo
+        st.image("assets/FondoLeptospiras4.jpg", width=80)  # Ruta del logo
     with col2:
         st.markdown(
             """
