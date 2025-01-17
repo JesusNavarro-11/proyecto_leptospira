@@ -1,27 +1,11 @@
 import streamlit as st
 from PIL import Image
 import cv2
-import base64
-from io import BytesIO
-
-def image_to_base64(image):
-    """
-    Convierte una imagen PIL a base64.
-
-    Args:
-        image (PIL.Image): Imagen a convertir.
-
-    Returns:
-        str: Representación base64 de la imagen.
-    """
-    buffered = BytesIO()
-    image.save(buffered, format="PNG")
-    buffered.seek(0)
-    return base64.b64encode(buffered.read()).decode()
+import numpy as np
 
 def select_roi(frame):
     """
-    Permite seleccionar un punto en la imagen para calcular la ROI usando clics reales.
+    Permite seleccionar un punto en la imagen usando controles interactivos de Streamlit.
 
     Args:
         frame (numpy array): Fotograma del video.
@@ -30,72 +14,45 @@ def select_roi(frame):
         tuple: Coordenadas de la ROI (x1, y1, x2, y2) o None si no se seleccionó un punto.
     """
     try:
-        st.write("Inicializando selección de ROI...")  # Mensaje de depuración
-
         # Convertir el fotograma a formato PIL
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image = Image.fromarray(frame_rgb)
 
-        # Redimensionar la imagen para despliegue
+        # Redimensionar la imagen para mostrarla en Streamlit
         display_width = 800
         aspect_ratio = image.height / image.width
         display_height = int(display_width * aspect_ratio)
-        image = image.resize((display_width, display_height))
+        image_resized = image.resize((display_width, display_height))
 
-        st.write("Imagen cargada y redimensionada.")  # Mensaje de depuración
+        # Mostrar la imagen al usuario
+        st.image(image_resized, caption="Selecciona la zona de interés (ROI)", use_container_width=True)
 
-        # Convertir imagen a base64
-        image_base64 = image_to_base64(image)
+        # Controles deslizantes para seleccionar las coordenadas de la ROI
+        st.write("Usa los deslizantes para seleccionar el centro de la ROI:")
+        x = st.slider("Coordenada X (horizontal)", 0, display_width, display_width // 2)
+        y = st.slider("Coordenada Y (vertical)", 0, display_height, display_height // 2)
 
-        # Mostrar imagen y capturar clics
-        st.write("Mostrando imagen para selección de ROI.")
-        html_code = f"""
-            <div>
-                <img src="data:image/png;base64,{image_base64}" 
-                     style="width:{display_width}px;height:{display_height}px;cursor:crosshair;" 
-                     onclick="getClickPosition(event)">
-            </div>
-            <script>
-                function getClickPosition(event) {{
-                    var rect = event.target.getBoundingClientRect();
-                    var x = Math.round(event.clientX - rect.left);
-                    var y = Math.round(event.clientY - rect.top);
-                    document.getElementById("coords").value = x + "," + y;
-                    document.getElementById("submit-coords").click();
-                }}
-            </script>
-            <form action="" method="GET">
-                <input type="hidden" id="coords" name="coords" value="">
-                <button id="submit-coords" style="display:none;">Submit</button>
-            </form>
-        """
-        st.markdown(html_code, unsafe_allow_html=True)
+        # Botón para confirmar la selección
+        if st.button("Confirmar Selección"):
+            st.success(f"Punto seleccionado: ({x}, {y})")
 
-        # Leer coordenadas desde los parámetros de la URL
-        query_params = st.query_params  # Cambiado a st.query_params
-        st.write(f"Parámetros recibidos: {query_params}")  # Mostrar parámetros actuales
-
-        if "coords" in query_params:
-            coords = query_params["coords"][0]
-            st.write(f"Coordenadas capturadas: {coords}")  # Mostrar coordenadas capturadas
-
-            # Procesar coordenadas
-            x, y = map(int, coords.split(","))
-            st.write(f"Punto seleccionado: ({x}, {y})")
-
-            # Calcular ROI alrededor del punto seleccionado
+            # Calcular la ROI alrededor del punto seleccionado
             half_size = 150  # Mitad de 300x300
-            x1, y1 = max(0, x - half_size), max(0, y - half_size)
-            x2, y2 = min(image.width, x + half_size), min(image.height, y + half_size)
+            x1 = max(0, x - half_size)
+            y1 = max(0, y - half_size)
+            x2 = min(display_width, x + half_size)
+            y2 = min(display_height, y + half_size)
 
-            st.write(f"ROI calculada: ({x1}, {y1}, {x2}, {y2})")
+            # Recortar la ROI original a partir de las coordenadas
+            x_ratio = frame.shape[1] / display_width
+            y_ratio = frame.shape[0] / display_height
+            roi = frame[int(y1 * y_ratio):int(y2 * y_ratio), int(x1 * x_ratio):int(x2 * x_ratio)]
 
-            # Mostrar vista previa de la ROI
-            roi = frame[y1:y2, x1:x2]
-            st.image(roi, caption="ROI Seleccionada")
-            return x1, y1, x2, y2
+            # Mostrar la ROI seleccionada
+            st.image(roi, caption="ROI Seleccionada (300x300)")
+            return (int(x1 * x_ratio), int(y1 * y_ratio), int(x2 * x_ratio), int(y2 * y_ratio))
 
-        st.info("Haz clic en la imagen para seleccionar un punto.")
+        st.info("Ajusta los deslizantes y haz clic en 'Confirmar Selección' para continuar.")
         return None
     except Exception as e:
         st.error(f"Error al seleccionar la ROI: {e}")
