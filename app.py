@@ -10,9 +10,9 @@ import os
 # Mostrar el encabezado con logo y título
 display_header_with_logo()
 
-st.header("Carga de Video y Análisis Interactivo")
+st.header("Sistema de Identificación de Leptospira Interrogans")
 
-# Cargar video
+# Paso 1: Cargar video
 uploaded_file = st.file_uploader("Sube un video para análisis", type=["mp4", "avi", "mov", "mkv"])
 
 if uploaded_file:
@@ -29,64 +29,41 @@ if uploaded_file:
         frame = extract_first_frame(mp4_video_path)
         display_centered_image(Image.fromarray(frame), caption="Fotograma Inicial", width=800)
 
-        # Selección interactiva de ROI
+        # Paso 2: Selección de ROI
         roi_coords = select_roi(frame)
 
         if roi_coords:
             x1, y1, x2, y2 = roi_coords
             st.write(f"Coordenadas de ROI seleccionada: ({x1}, {y1}), ({x2}, {y2})")
-        
+
             # Preprocesar ROI
             roi_preprocessed = preprocess_roi(frame, (x1, y1, x2, y2))
             st.success("ROI preprocesada y lista para el modelo.")
-        
-            # Verificar y corregir el formato para visualización
-            st.write(f"Forma de ROI preprocesada: {roi_preprocessed.shape}")
-            st.write(f"Tipo de datos de ROI preprocesada: {roi_preprocessed.dtype}")
-        
-            # ROI debe ser escalada y convertida a uint8
-            roi_for_display = (roi_preprocessed[0] * 255).astype("uint8")  # Escalar y convertir
-            st.write(f"Forma después de ajuste: {roi_for_display.shape}")
-            st.write(f"Tipo de datos después de ajuste: {roi_for_display.dtype}")
-        
-            # Verificar si es escala de grises o RGB
-            if len(roi_for_display.shape) == 2:  # Escala de grises
-                roi_image = Image.fromarray(roi_for_display)
-            elif len(roi_for_display.shape) == 3 and roi_for_display.shape[2] == 3:  # RGB
-                roi_image = Image.fromarray(roi_for_display)
-            else:
-                raise ValueError("La ROI tiene un formato inesperado para su visualización.")
-        
-            # Mostrar la ROI redimensionada
+            
+            # Mostrar ROI redimensionada
+            roi_for_display = (roi_preprocessed[0] * 255).astype("uint8")
+            roi_image = Image.fromarray(roi_for_display)
             display_centered_image(roi_image, caption="ROI Redimensionada (300x300)", width=300)
 
+            # Paso 3: Preguntar si desea registrar información
+            register_info = st.radio("¿Desea registrar información sobre la muestra?", ("Sí", "No"))
+
+            patient_data = None
+            if register_info == "Sí":
+                patient_data = collect_patient_info()
+
+            # Paso 4: Procesar el video
+            if st.button("Procesar Video"):
+                with st.spinner("Procesando el video..."):
+                    result = process_frames_with_clahe(mp4_video_path, roi_coords)
+                    st.success("Procesamiento finalizado.")
+                    st.write(result)
+
+                # Mostrar información del paciente si existe
+                if patient_data:
+                    st.subheader("Información del Paciente")
+                    st.json(patient_data)
     except ValueError as e:
         st.error(f"Error: {e}")
-
-
-# Preguntar al usuario si desea registrar información
-register_info = st.radio("¿Desea registrar información sobre la muestra?", ("Sí", "No"))
-
-patient_data = None
-if register_info == "Sí":
-    patient_data = collect_patient_info()
-
-# Cargar video
-uploaded_video = st.file_uploader("Sube un video para análisis", type=["mp4", "avi", "mov", "mkv"])
-if uploaded_video:
-    # Simular la selección de ROI
-    st.subheader("Selecciona el área de interés (ROI)")
-    roi_coords = st.slider("Simula las coordenadas de la ROI (x1, y1, x2, y2)", 0, 500, (50, 50, 350, 350))
-
-    if st.button("Procesar Video"):
-        # Aquí comienza el procesamiento solo después de la selección
-        with st.spinner("Procesando el video..."):
-            result = process_frames_with_clahe("uploaded_video_path.mp4", roi_coords)
-            st.success("Procesamiento finalizado.")
-            st.write(result)
-
-        if patient_data:
-            st.subheader("Información del Paciente")
-            st.json(patient_data)
 else:
     st.info("Por favor, sube un video para comenzar.")
