@@ -16,7 +16,7 @@ def image_to_base64(image):
     """
     buffered = BytesIO()
     image.save(buffered, format="PNG")
-    buffer.seek(0)
+    buffered.seek(0)
     return base64.b64encode(buffered.read()).decode()
 
 def select_roi(frame):
