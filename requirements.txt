@@ -1,10 +1,13 @@
-# PyTorch y bibliotecas relacionadas
-pip==25.0
-torch
-torchvision
-torchaudio
+# 🔹 1. Actualiza pip primero
+pip==25.0  
 
-# Dependencias adicionales
+# 🔹 2. Instala PyTorch (con soporte para CPU o CUDA)
+# Para CPU (si no tienes GPU compatible con CUDA):
+torch --index-url https://download.pytorch.org/whl/cpu
+torchvision --index-url https://download.pytorch.org/whl/cpu
+torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+# 🔹 3. Instala dependencias adicionales
 gdown
 opencv-python-headless
 Pillow
@@ -12,5 +15,5 @@ numpy
 streamlit
 fpdf
 
-# Detectron2 (se instala después de PyTorch)
+# 🔹 4. Instala Detectron2 después de PyTorch
 git+https://github.com/facebookresearch/detectron2.git
