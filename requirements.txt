@@ -1,13 +1,6 @@
-# 🔹 1. Actualiza pip primero
-pip==25.0  
+pip==25.0  # Asegura que pip esté actualizado
 
-# 🔹 2. Instala PyTorch (con soporte para CPU o CUDA)
-# Para CPU (si no tienes GPU compatible con CUDA):
-torch --index-url https://download.pytorch.org/whl/cpu
-torchvision --index-url https://download.pytorch.org/whl/cpu
-torchaudio --index-url https://download.pytorch.org/whl/cpu
-
-# 🔹 3. Instala dependencias adicionales
+# Dependencias generales
 gdown
 opencv-python-headless
 Pillow
@@ -15,5 +8,11 @@ numpy
 streamlit
 fpdf
 
-# 🔹 4. Instala Detectron2 después de PyTorch
+# PyTorch CPU (si no usas GPU)
+torch==2.0.1+cpu
+torchvision==0.15.2+cpu
+torchaudio==2.0.1+cpu
+-f https://download.pytorch.org/whl/cpu
+
+# Detectron2 (se instalará desde GitHub)
 git+https://github.com/facebookresearch/detectron2.git
