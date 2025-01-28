@@ -2,28 +2,42 @@ import streamlit as st
 from PIL import Image, ImageDraw
 import cv2
 import numpy as np
+import os
+import gdown
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
 
-# Configuración del modelo Detectron2
-@st.cache_resource
-def load_detectron2_model():
-    """
-    Carga el modelo Detectron2 con la configuración y pesos preentrenados.
+# Ruta y enlace al modelo en Google Drive
+MODEL_PATH = "models/model_final.pth"
+MODEL_URL = "https://drive.google.com/uc?id=1Q_nMLpihPseeOogMZLr2kd061xVH0-M8"
 
-    Returns:
-        DefaultPredictor: Modelo listo para realizar inferencias.
+# Verificar si el modelo existe y descargarlo si es necesario
+@st.cache_resource
+def download_and_load_model():
     """
+    Descarga el modelo desde Google Drive si no existe localmente,
+    y carga Detectron2 con la configuración adecuada.
+    """
+    # Crear carpeta para modelos si no existe
+    os.makedirs("models", exist_ok=True)
+
+    # Descargar el modelo si no está disponible localmente
+    if not os.path.exists(MODEL_PATH):
+        st.info("Descargando el modelo desde Google Drive...")
+        gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+
+    # Configurar y cargar Detectron2
     cfg = get_cfg()
     cfg.merge_from_file("configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")  # Cambia si es necesario
-    cfg.MODEL.WEIGHTS = "model_final.pth"  # Ruta a tu modelo entrenado
+    cfg.MODEL.WEIGHTS = MODEL_PATH
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1  # Número de clases personalizadas
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7  # Umbral de confianza
     cfg.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"  # Usar GPU si está disponible
+
     return DefaultPredictor(cfg)
 
 # Cargar el modelo Detectron2
-predictor = load_detectron2_model()
+predictor = download_and_load_model()
 
 def select_roi_and_detect(frame):
     """
@@ -81,6 +95,7 @@ def select_roi_and_detect(frame):
             outputs = predictor(roi)
 
             # Dibujar bounding boxes sobre la ROI
+            from detectron2.utils.visualizer import Visualizer
             v = Visualizer(roi[:, :, ::-1], scale=0.8)
             v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
             detected_image = v.get_image()[:, :, ::-1]
