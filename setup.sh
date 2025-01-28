@@ -10,4 +10,4 @@ echo "🔧 Instalando dependencias generales..."
 pip install gdown opencv-python-headless Pillow numpy streamlit fpdf
 
 echo "🔧 Instalando Detectron2 desde GitHub..."
-pip install git+https://github.com/facebookresearch/detectron2.git
+pip install git+https://github.com/facebookresearch/detectron2.git@v0.6
