@@ -15,4 +15,5 @@ torchaudio==2.0.1+cpu
 -f https://download.pytorch.org/whl/cpu
 
 # Detectron2 (se instalará desde GitHub)
-git+https://github.com/facebookresearch/detectron2.git
+pip install git+https://github.com/facebookresearch/detectron2.git@v0.6 --no-build-isolation
+
