@@ -1,9 +1,9 @@
 torch
 torchvision
-detectron2
+gdown
 opencv-python-headless
 Pillow
 numpy
 streamlit
 fpdf
-gdown
+git+https://github.com/facebookresearch/detectron2.git
