@@ -1,9 +1,16 @@
+# PyTorch y bibliotecas relacionadas
+pip==25.0
 torch
 torchvision
+torchaudio
+
+# Dependencias adicionales
 gdown
 opencv-python-headless
 Pillow
 numpy
 streamlit
 fpdf
+
+# Detectron2 (se instala después de PyTorch)
 git+https://github.com/facebookresearch/detectron2.git
