@@ -1,4 +1,6 @@
-moviepy==1.0.3
+torch
+torchvision
+detectron2
 opencv-python-headless
 Pillow
 numpy
