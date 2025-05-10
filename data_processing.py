@@ -96,7 +96,3 @@ def preprocess_roi(frame, roi_coords, target_size=(300, 300)):
         return np.expand_dims(roi_normalized, axis=0)  # Agregar dimensión batch
     except Exception as e:
         raise ValueError(f"Error al procesar la ROI: {e}")
-
-
-
-
