@@ -53,4 +53,4 @@ def process_frames_with_clahe(video_file_path, roi_coords, fps=6):
     """
     cropped_video = crop_video_to_roi(video_file_path, roi_coords)
     # Aquí simulamos el procesamiento sin implementar CLAHE y modelo real.
-    return f"Simulación de procesamiento completo para {cropped_video}"
+    return f"Simulación de procesamiento completo para {cropped_video}". Te sería util conocer el archivo de requerimentos txt?
