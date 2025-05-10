@@ -1,2 +1,6 @@
+moviepy==1.0.3
+opencv-python-headless
+Pillow
+numpy
 streamlit
-opencv-python-headless==4.8.0.76
+fpdf. 
