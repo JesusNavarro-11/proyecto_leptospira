@@ -156,4 +156,4 @@ if uploaded_file:
     except ValueError as e:
         st.error(f"Error: {e}")
 else:
-    st.info("Por favor, sube un video para comenzar.").
+    st.info("Por favor, sube un video para comenzar.")
